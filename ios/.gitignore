@@ -1,0 +1,10 @@
+*.xcodeproj/
+DerivedData/
+build/
+*.ipa
+*.p12
+*.mobileprovision
+private/
+*.pem
+*.key
+.DS_Store

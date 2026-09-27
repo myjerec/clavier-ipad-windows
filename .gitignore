@@ -1,0 +1,25 @@
+# Local credentials and device enrollment — NEVER publish.
+private/
+*.pem
+*.key
+*.cer
+*.pfx
+*.p12
+__pycache__/
+*.py[cod]
+.venv/
+*.log
+*.zip
+.env
+.env.*
+work/
+*.exe
+*.spec
+build/
+dist/
+
+*.ipa
+*.mobileprovision
+DerivedData/
+*.xcodeproj/
+.DS_Store

@@ -1,0 +1,4 @@
+cryptography>=43,<49
+qrcode>=7.4.2,<9
+pystray==0.19.5
+Pillow>=10,<13
