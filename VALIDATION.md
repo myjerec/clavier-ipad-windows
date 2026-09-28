@@ -15,3 +15,7 @@
 Scan avec un iPad physique, prédictions selon langue et version iPadOS, toutes les combinaisons et lecteurs multimédia, comportement dans chaque éditeur, changements d’adresse, veille et reconnexion dans plusieurs réseaux. L’usage de base a été confirmé pendant le développement, sans constituer une campagne exhaustive sur appareils.
 
 Le projet iOS natif n’a pas été compilé sur Mac ni testé sur iPad. Pas de binaire iOS fourni. Les exécutables Windows ne sont pas signés par un certificat d’éditeur. Aucun audit indépendant de sécurité n’a été réalisé.
+
+## Correctif 1.1.1
+
+Le test de la version 1.1.0 n’initialisait pas Tk et ne détectait donc pas l’erreur init.tcl signalée. L’autodiagnostic du correctif crée et ferme maintenant une vraie fenêtre avant de tester HTTPS.

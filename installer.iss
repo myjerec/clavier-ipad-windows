@@ -1,6 +1,6 @@
 ; Build with ISCC.exe installer.iss. Only the public executable and guide are packaged.
 #ifndef AppExe
-  #define AppExe "dist\Clavier-iPad.exe"
+  #define AppExe "dist\Clavier-iPad\Clavier-iPad.exe"
 #endif
 #ifndef SetupOutput
   #define SetupOutput "dist"
@@ -8,7 +8,7 @@
 [Setup]
 AppId={{E90241F3-A25C-4B3A-9DA5-67152DEB40B1}
 AppName=Clavier iPad
-AppVersion=1.1.0
+AppVersion=1.1.1
 AppPublisher=Clavier iPad
 DefaultDirName={localappdata}\Programs\Clavier-iPad
 DefaultGroupName=Clavier iPad
@@ -34,6 +34,7 @@ Name: "desktopicon"; Description: "Créer un raccourci sur le Bureau"; GroupDesc
 
 [Files]
 Source: "{#AppExe}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Clavier-iPad\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "LIRE-MOI.md"; DestDir: "{app}"; Flags: ignoreversion
 
 Source: "THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion

@@ -8,6 +8,11 @@ def run(app,report):
     from pathlib import Path
     checks=[]
     try:
+        window=app.tk.Tk()
+        window.withdraw()
+        window.update_idletasks()
+        window.destroy()
+        checks.append('real-tcl-tk-window-initialization')
         with tempfile.TemporaryDirectory() as temp:
             private=Path(temp)
             cert,key,_=app.certificate('127.0.0.1',private)

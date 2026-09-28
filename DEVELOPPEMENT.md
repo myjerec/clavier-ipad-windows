@@ -31,16 +31,16 @@ Les tests du protocole utilisent un récepteur simulé pour ne pas taper dans le
 .\CONSTRUIRE_EXE.ps1
 ```
 
-Résultat : `dist/Clavier-iPad.exe`, avec l’interface web, Tcl/Tk, cryptographie, QR code et icône de notification embarqués. Ne lance pas le binaire cible pendant sa reconstruction. Le script installe PyInstaller et les dépendances dans l’environnement Python actif ; utilise de préférence l’environnement virtuel.
+Résultat : `dist/Clavier-iPad/Clavier-iPad.exe`, avec l’interface web, Tcl/Tk, cryptographie, QR code et icône de notification dans le dossier `_internal` adjacent. Distribuer le dossier complet. Ne lance pas le binaire cible pendant sa reconstruction. Le script installe PyInstaller et les dépendances dans l’environnement Python actif ; utilise de préférence l’environnement virtuel.
 
 Pour vérifier le binaire sans saisir de touches :
 
 ```powershell
-$p = Start-Process .\dist\Clavier-iPad.exe -ArgumentList '--self-test', "$PWD\dist\self-test.json" -Wait -PassThru
+$p = Start-Process .\dist\Clavier-iPad\Clavier-iPad.exe -ArgumentList '--self-test', "$PWD\dist\self-test.json" -Wait -PassThru
 Get-Content .\dist\self-test.json
 ```
 
-Attendre `ok: true`. Cette vérification couvre TLS, les ressources intégrées, l’authentification et la persistance d’appairage.
+Attendre `ok: true`. Cette vérification initialise une vraie fenêtre Tk puis couvre TLS, les ressources intégrées, l’authentification et la persistance d’appairage.
 
 ## Construire le Setup
 

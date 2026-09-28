@@ -1,10 +1,10 @@
-# Guide d’utilisation — Clavier iPad 1.1.0
+# Guide d’utilisation — Clavier iPad 1.1.1
 
 ## Installer sur Windows
 
 Télécharge `Clavier-iPad-Setup.exe` depuis les [versions GitHub](https://github.com/myjerec/clavier-ipad-windows/releases). Ferme l’ancien compagnon, y compris son icône près de l’horloge, puis lance le Setup. Le dossier proposé est `%LOCALAPPDATA%\Programs\Clavier-iPad`. Aucun Python n’est nécessaire.
 
-Pour la version portable, extrais tout le ZIP dans un dossier où tu peux écrire. Conserve le dossier `private` créé après le premier lancement : il contient l’identité de ce compagnon et l’appairage. Ne lance pas simultanément les versions portable et installée sur la même adresse/port.
+Pour la version portable, extrais tout le ZIP dans un dossier où tu peux écrire. Ne déplace pas le .exe seul : le dossier `_internal` contient les composants de la fenêtre. Conserve le dossier `private` créé après le premier lancement : il contient l’identité de ce compagnon et l’appairage. Ne lance pas simultanément les versions portable et installée sur la même adresse/port.
 
 Le Setup se désinstalle depuis les paramètres Applications de Windows. Les données générées dans `private/` sont conservées ; supprime-les manuellement seulement si tu souhaites effacer l’identité et l’appairage.
 
