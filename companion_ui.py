@@ -17,7 +17,7 @@ def run(app):
     bg, panel, border = '#10151e', '#1b2432', '#344258'
     white, muted, lime = '#f3f6fc', '#afbdd0', '#c5ed82'
     root = tk.Tk()
-    root.title('Clavier iPad · Compagnon Windows')
+    root.title('ClaviGo · Compagnon Windows')
     root.iconbitmap(default=str(app.ASSET_ROOT/'app-icon.ico'))
     root.geometry('800x760')
     root.minsize(760, 740)
@@ -84,7 +84,7 @@ def run(app):
         root.withdraw()
 
     button(header, 'Masquer près de l’horloge', hide_window).pack(side='right', anchor='n')
-    label(header, 'CLAVIER iPAD', 10, lime, True).pack(anchor='w')
+    label(header, 'CLAVIGO', 10, lime, True).pack(anchor='w')
     label(header, 'Ton clavier, sans fil.', 27, bold=True).pack(anchor='w', pady=(4, 0))
     label(header, 'Le compagnon de ton iPad sur Windows.', color=muted).pack(anchor='w', pady=(3, 18))
     banner = tk.Frame(outer, bg=panel, padx=16, pady=12)
@@ -270,7 +270,7 @@ def run(app):
                 address.set(sys.argv[index+1])
         root.after(200, start)
     icon_image = Image.open(app.ASSET_ROOT/'app-icon.png').convert('RGBA')
-    tray = pystray.Icon('Clavier-iPad', icon_image, 'Clavier iPad · Compagnon Windows',
+    tray = pystray.Icon('ClaviGo', icon_image, 'ClaviGo · Compagnon Windows',
                         pystray.Menu(
                             pystray.MenuItem('Afficher le compagnon', lambda: tray_events.put('show'), default=True),
                             pystray.MenuItem('Masquer le compagnon', lambda: tray_events.put('hide')),

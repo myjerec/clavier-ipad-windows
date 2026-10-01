@@ -1,4 +1,4 @@
-# Clavier iPad pour Windows
+# ClaviGo — le clavier iPad pour Windows
 
 <img src="app-icon.png" alt="Icône Clavier iPad" width="128">
 
@@ -6,13 +6,13 @@
 
 Le compagnon Windows reçoit les commandes sur le réseau local. L’iPad utilise Safari : aucune application App Store n’est nécessaire pour cette version. De gros boutons donnent accès aux touches PC, raccourcis, chiffres et commandes multimédia.
 
-**Version 1.2.1 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
+**Version 1.2.2 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
 
 ## Télécharger
 
-➡ **[Télécharger le Setup Windows](https://github.com/myjerec/clavier-ipad-windows/releases/latest/download/Clavier-iPad-Setup.exe)**
+➡ **[Télécharger le Setup Windows](https://github.com/myjerec/clavier-ipad-windows/releases/latest/download/ClaviGo-Setup.exe)**
 
-- [Version portable complète (ZIP)](https://github.com/myjerec/clavier-ipad-windows/releases/latest/download/Clavier-iPad-Portable.zip) : extraire le dossier puis lancer `Clavier-iPad.exe`.
+- [Version portable complète (ZIP)](https://github.com/myjerec/clavier-ipad-windows/releases/latest/download/ClaviGo-Portable.zip) : extraire le dossier puis lancer `ClaviGo.exe`.
 - Le `.exe` est fourni avec son dossier `_internal` dans le ZIP : garde les deux ensemble. Le Setup installe tout automatiquement, sans Python à installer.
 - [Toutes les versions et sommes SHA-256](https://github.com/myjerec/clavier-ipad-windows/releases).
 

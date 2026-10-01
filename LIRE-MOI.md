@@ -1,8 +1,8 @@
-# Guide d’utilisation — Clavier iPad 1.2.0
+# Guide d’utilisation — ClaviGo 1.2.2
 
 ## Installer sur Windows
 
-Télécharge `Clavier-iPad-Setup.exe` depuis les [versions GitHub](https://github.com/myjerec/clavier-ipad-windows/releases). Ferme l’ancien compagnon, y compris son icône près de l’horloge, puis lance le Setup. Le dossier proposé est `%LOCALAPPDATA%\Programs\Clavier-iPad`. Aucun Python n’est nécessaire.
+Télécharge `ClaviGo-Setup.exe` depuis les [versions GitHub](https://github.com/myjerec/clavier-ipad-windows/releases). Ferme l’ancien compagnon, y compris son icône près de l’horloge, puis lance le Setup. Le dossier proposé est `%LOCALAPPDATA%\Programs\Clavier-iPad`. Aucun Python n’est nécessaire.
 
 Pour la version portable, extrais tout le ZIP dans un dossier où tu peux écrire. Ne déplace pas le .exe seul : le dossier `_internal` contient les composants de la fenêtre. Conserve le dossier `private` créé après le premier lancement : il contient l’identité de ce compagnon et l’appairage. Ne lance pas simultanément les versions portable et installée sur la même adresse/port.
 
@@ -90,3 +90,7 @@ Dans l’onglet Presse-papiers, **iPad → PC** lit le texte copié sur l’iPad
 Safari peut demander une autorisation ou un geste Coller. Si l’accès direct est refusé, colle le texte dans la zone du panneau puis utilise les boutons de copie. Pour recevoir depuis le PC, le texte est également placé dans cette zone. Aucun échange n’a lieu en arrière-plan. [Règles du presse-papiers Safari](https://webkit.org/blog/10855/async-clipboard-api/).
 
 La saisie est toujours automatique après appairage, sans option Direct ni bouton Reprendre. iPadOS peut encore imposer de toucher le champ pour afficher son clavier Apple : une page web ne peut pas forcer son ouverture sans interaction. Après une erreur réseau, les caractères au résultat incertain ne sont pas renvoyés : vérifie le document avant de continuer.
+
+## Nouveau nom ClaviGo
+
+Le programme est désormais ClaviGo.exe et le raccourci ClaviGo. Le dossier d’installation historique Clavier-iPad est conservé pour préserver les données locales ; c’est normal. Le dépôt GitHub garde son adresse existante.

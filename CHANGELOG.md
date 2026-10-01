@@ -1,5 +1,12 @@
 # Historique
 
+## 1.2.2 — 1 octobre 2026
+
+- Clavier iPad devient **ClaviGo** : fenêtre Windows, icône de notification, interface iPad, raccourcis et Setup.
+- Fichiers distribués : ClaviGo-Setup.exe et ClaviGo-Portable.zip.
+- Identité de l’installateur et dossier existant conservés pour garder les certificats et l’appairage.
+
+
 ## 1.2.1 — 1 octobre 2026
 
 - Nouvelle icône fournie par le créateur du projet : programme Windows, fenêtre, zone de notification et Setup.

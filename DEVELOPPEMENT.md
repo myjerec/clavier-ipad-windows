@@ -31,12 +31,12 @@ Les tests du protocole utilisent un récepteur simulé pour ne pas taper dans le
 .\CONSTRUIRE_EXE.ps1
 ```
 
-Résultat : `dist/Clavier-iPad/Clavier-iPad.exe`, avec l’interface web, Tcl/Tk, cryptographie, QR code et icône de notification dans le dossier `_internal` adjacent. Distribuer le dossier complet. Ne lance pas le binaire cible pendant sa reconstruction. Le script installe PyInstaller et les dépendances dans l’environnement Python actif ; utilise de préférence l’environnement virtuel.
+Résultat : `dist/ClaviGo/ClaviGo.exe`, avec l’interface web, Tcl/Tk, cryptographie, QR code et icône de notification dans le dossier `_internal` adjacent. Distribuer le dossier complet. Ne lance pas le binaire cible pendant sa reconstruction. Le script installe PyInstaller et les dépendances dans l’environnement Python actif ; utilise de préférence l’environnement virtuel.
 
 Pour vérifier le binaire sans saisir de touches :
 
 ```powershell
-$p = Start-Process .\dist\Clavier-iPad\Clavier-iPad.exe -ArgumentList '--self-test', "$PWD\dist\self-test.json" -Wait -PassThru
+$p = Start-Process .\dist\ClaviGo\ClaviGo.exe -ArgumentList '--self-test', "$PWD\dist\self-test.json" -Wait -PassThru
 Get-Content .\dist\self-test.json
 ```
 
@@ -50,7 +50,7 @@ Installe le compilateur [Inno Setup](https://jrsoftware.org/), puis compile avec
 & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' .\installer.iss
 ```
 
-Adapte le chemin si Inno Setup est installé ailleurs. Résultat : `dist/Clavier-iPad-Setup.exe`. Le script n’intègre que l’exécutable, le guide et les licences, jamais `private/`.
+Adapte le chemin si Inno Setup est installé ailleurs. Résultat : `dist/ClaviGo-Setup.exe`. Le script n’intègre que l’exécutable, le guide et les licences, jamais `private/`.
 
 Les notices de `third_party/` correspondent au binaire publié : actualise-les si tu changes les dépendances. Les contraintes de requirements.txt ne verrouillent pas toutes les dépendances transitives ; la compilation n’est pas garantie identique octet par octet.
 
