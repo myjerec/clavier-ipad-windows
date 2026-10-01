@@ -340,7 +340,7 @@ def handler(state, host):
             return local(self.client_address[0]) and self.headers.get('Host')==host
         def do_GET(self):
             if not self.allowed(): return self.reply(403,{'error':'Accès local uniquement'})
-            files={'/':('index.html','text/html; charset=utf-8'),'/extras.js':('extras.js','text/javascript; charset=utf-8'),'/app.js':('app.js','text/javascript; charset=utf-8'),'/native-draft.js':('native-draft.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8')}
+            files={'/app-icon.png':('app-icon.png','image/png'),'/app-icon.ico':('app-icon.ico','image/x-icon'),'/':('index.html','text/html; charset=utf-8'),'/extras.js':('extras.js','text/javascript; charset=utf-8'),'/app.js':('app.js','text/javascript; charset=utf-8'),'/native-draft.js':('native-draft.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8')}
             if self.path not in files: return self.reply(404,{'error':'Introuvable'})
             filename,ctype=files[self.path]
             self.reply(200,(ASSET_ROOT/filename).read_bytes(),ctype)

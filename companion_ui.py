@@ -9,7 +9,7 @@ import tkinter as tk
 import qrcode
 import queue
 import pystray
-from PIL import Image, ImageDraw
+from PIL import Image
 from tkinter import ttk, messagebox
 
 
@@ -18,6 +18,7 @@ def run(app):
     white, muted, lime = '#f3f6fc', '#afbdd0', '#c5ed82'
     root = tk.Tk()
     root.title('Clavier iPad · Compagnon Windows')
+    root.iconbitmap(default=str(app.ASSET_ROOT/'app-icon.ico'))
     root.geometry('800x760')
     root.minsize(760, 740)
     root.configure(bg=bg)
@@ -268,13 +269,7 @@ def run(app):
             if index+1 < len(sys.argv) and sys.argv[index+1] in ips:
                 address.set(sys.argv[index+1])
         root.after(200, start)
-    icon_image = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(icon_image)
-    draw.rounded_rectangle((3, 10, 61, 54), radius=9, fill=bg, outline=lime, width=3)
-    for y in (20, 30):
-        for x in (12, 23, 34, 45):
-            draw.rounded_rectangle((x, y, x+6, y+5), radius=1, fill=lime)
-    draw.rounded_rectangle((17, 41, 47, 45), radius=2, fill=lime)
+    icon_image = Image.open(app.ASSET_ROOT/'app-icon.png').convert('RGBA')
     tray = pystray.Icon('Clavier-iPad', icon_image, 'Clavier iPad · Compagnon Windows',
                         pystray.Menu(
                             pystray.MenuItem('Afficher le compagnon', lambda: tray_events.put('show'), default=True),

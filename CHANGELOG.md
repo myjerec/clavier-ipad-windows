@@ -1,5 +1,11 @@
 # Historique
 
+## 1.2.1 — 1 octobre 2026
+
+- Nouvelle icône fournie par le créateur du projet : programme Windows, fenêtre, zone de notification et Setup.
+- Icône Safari et écran d’accueil iPad. Le nom Clavier iPad reste inchangé.
+
+
 ## 1.2.0 — 1 octobre 2026
 
 - Saisie toujours directe, sans boutons Reprendre ici, Direct ou Synchroniser.

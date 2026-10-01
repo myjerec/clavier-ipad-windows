@@ -32,7 +32,7 @@ def run(app,report):
                 client.request('POST' if data is not None else 'GET',path,json.dumps(data) if data is not None else None,headers)
                 response=client.getresponse();result=(response.status,dict(response.getheaders()),response.read());client.close();return result
             try:
-                for name in ['/', '/app.js','/style.css','/native-draft.js','/extras.js']:
+                for name in ['/', '/app.js','/style.css','/native-draft.js','/extras.js','/app-icon.png','/app-icon.ico']:
                     status,_,body=request(name)
                     assert status==200 and len(body)>10,name
                 checks.append('all-embedded-assets-over-verified-https')

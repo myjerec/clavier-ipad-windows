@@ -1,10 +1,12 @@
 # Clavier iPad pour Windows
 
+<img src="app-icon.png" alt="Icône Clavier iPad" width="128">
+
 **Écris sur ton PC avec le vrai clavier de ton iPad, ses suggestions et ses corrections.**
 
 Le compagnon Windows reçoit les commandes sur le réseau local. L’iPad utilise Safari : aucune application App Store n’est nécessaire pour cette version. De gros boutons donnent accès aux touches PC, raccourcis, chiffres et commandes multimédia.
 
-**Version 1.2.0 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
+**Version 1.2.1 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
 
 ## Télécharger
 
