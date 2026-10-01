@@ -8,7 +8,7 @@
 [Setup]
 AppId={{E90241F3-A25C-4B3A-9DA5-67152DEB40B1}
 AppName=Clavier iPad
-AppVersion=1.1.1
+AppVersion=1.2.0
 AppPublisher=Clavier iPad
 DefaultDirName={localappdata}\Programs\Clavier-iPad
 DefaultGroupName=Clavier iPad

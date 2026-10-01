@@ -24,3 +24,7 @@ Ce projet n’a pas subi d’audit indépendant. Les tests automatisés et véri
 ## Signalement
 
 Ne publie pas de clés, cookies, certificats privés ou documents personnels dans les issues. Pour une faille exploitable, utilise le signalement privé GitHub s’il est disponible ; sinon ouvre uniquement une demande de contact sans détail d’exploitation ni donnée sensible.
+
+## Presse-papiers
+
+Les commandes clipboard read/write exigent le même appairage, le contrôle d’origine et un compagnon non pausé. Transferts explicites de texte brut uniquement, limités à 2 000 caractères. Pas de surveillance ni d’historique. Le panneau affiche le texte reçu en mémoire pendant l’utilisation ; il n’est pas conservé dans localStorage.

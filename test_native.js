@@ -9,10 +9,11 @@ const vm=require('node:vm'),fs=require('node:fs');
 const elements=new Map(),requests=[],replies=[];
 function element(){return {value:'',checked:true,disabled:false,textContent:'',listeners:{},classList:{toggle(){}},append(){},setAttribute(){},addEventListener(k,fn){this.listeners[k]=fn;},focus(){}};}
 const document={documentElement:{style:{setProperty(){}}},hidden:false,getElementById(id){if(!elements.has(id))elements.set(id,element());return elements.get(id);},createElement:element,querySelectorAll(){return [];},addEventListener(){}};
-const context=vm.createContext({window:{innerHeight:768,setInterval(){},addEventListener(){}},crypto:require('node:crypto').webcrypto,document,AbortController,setTimeout:()=>1,clearTimeout(){},nextDraft,fetch:(path,options)=>new Promise(resolve=>{
+const clipboardWrites=[];
+const context=vm.createContext({navigator:{clipboard:{readText:async()=>"iPad é",writeText:async text=>clipboardWrites.push(text)}},window:{innerHeight:768,setInterval(){},addEventListener(){}},crypto:require('node:crypto').webcrypto,document,AbortController,setTimeout:()=>1,clearTimeout(){},nextDraft,fetch:(path,options)=>new Promise(resolve=>{
  const data=JSON.parse(options.body);
  if(data.type==='status'){resolve({ok:true,json:async()=>({ok:true})});return;}
- requests.push(data);replies.push(()=>resolve({ok:true,json:async()=>({ok:true})}));
+ requests.push(data);replies.push((extra={})=>resolve({ok:true,json:async()=>({ok:true,...extra})}));
 })});
 vm.runInContext(fs.readFileSync(__dirname+'/app.js','utf8'),context);
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -34,5 +35,22 @@ const tick=()=>new Promise(resolve=>setImmediate(resolve));
  input.listeners.beforeinput({inputType:'insertText',data:'c',cancelable:true,isComposing:false,preventDefault(){prevented=true;}});
  await tick();assert.equal(prevented,true);assert.equal(requests[5].key,'C');assert.equal(requests[5].mods[0],'Ctrl');
  replies.shift()();await tick();
+ input.value='Après';input.listeners.input({isComposing:false});await tick();
+ assert.equal(requests[6].base,'');assert.equal(requests[6].text,'Après');
+ replies.shift()({reset:true});await tick();assert.equal(input.value,'');
+ input.value='Nouveau';input.listeners.input({isComposing:false});await tick();
+ assert.equal(requests[7].base,'');assert.equal(requests[7].auto,true);
+ replies.shift()();await tick();
+ assert.ok(!fs.readFileSync(__dirname+'/index.html','utf8').includes('id="new-text"'));
+ assert.ok(!fs.readFileSync(__dirname+'/index.html','utf8').includes('id="live"'));
+ const toPC=elements.get('clip-to-pc').onclick();await tick();
+ assert.equal(requests[8].type,'clipboard');assert.equal(requests[8].text,'iPad é');
+ replies.shift()();await toPC;
+ const fromPC=elements.get('clip-from-pc').onclick();await tick();
+ assert.equal(requests[9].action,'read');replies.shift()({text:'PC é'});await fromPC;
+ assert.equal(elements.get('clipboard-text').value,'PC é');
+ await elements.get('clip-copy-text').onclick();assert.equal(clipboardWrites[0],'PC é');
+ elements.get('clipboard-text').value='z'.repeat(2001);
+ await elements.get('clip-send-text').onclick();assert.equal(requests.length,10);
  console.log('PASS: immediate first letter, coalesced in-flight typing, autocorrection, composition, deletion and no duplicates.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

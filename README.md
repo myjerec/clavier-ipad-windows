@@ -4,7 +4,7 @@
 
 Le compagnon Windows reçoit les commandes sur le réseau local. L’iPad utilise Safari : aucune application App Store n’est nécessaire pour cette version. De gros boutons donnent accès aux touches PC, raccourcis, chiffres et commandes multimédia.
 
-**Version 1.1.1 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
+**Version 1.2.0 — première publication, encore en développement.** Windows 10/11 x64 ; interface en français. macOS n’est pas pris en charge. Les sources natives iOS sont [expérimentales](ios/README.md), sans IPA compilé.
 
 ## Télécharger
 
@@ -34,6 +34,7 @@ Le QR code ouvre l’adresse : il n’installe pas le certificat et ne contourne
 | Touches PC | Ctrl, Alt, Maj, Windows, AltGr, Tab, Échap, Entrée, Retour arrière, Suppr |
 | Navigation | Flèches, Début/Fin, Page précédente/suivante, F1–F12 |
 | Raccourcis | Copier, coller, annuler, changer de fenêtre, navigateur, enregistrer, imprimer… |
+| Presse-papiers | Texte iPad ↔ PC, avec accès explicite et zone de secours |
 | Pavé numérique | Chiffres, séparateurs et opérations, sans dépendre de Verr. Num |
 | Applications | Navigateur, Bloc-notes, Explorateur, Calculatrice, Paint, Discord si installé |
 | Son et musique | Volume, muet, lecture/pause et changement de piste |
@@ -51,7 +52,7 @@ Les clés, certificats et données d’appairage sont générés sur chaque PC d
 
 ## À savoir avant de l’utiliser
 
-- Les frappes vont dans **la fenêtre active du PC**. Après un changement de fenêtre ou de curseur, touche **Reprendre ici**.
+- Les frappes vont dans **la fenêtre active du PC**. La saisie reprend automatiquement après un changement de fenêtre ou de curseur. Une correction portant sur l’ancienne zone est ignorée.
 - **Ctrl+Alt+Suppr**, l’écran verrouillé, les demandes UAC et les fenêtres exécutées en administrateur ne sont pas pris en charge.
 - Certaines corrections impliquant emoji, caractères combinés ou retours à la ligne sont arrêtées pour éviter un effacement ambigu. Voir le guide.
 - Les tests automatisés et les essais Windows ne remplacent pas des essais sur tous les modèles d’iPad et toutes les applications. [État des validations](VALIDATION.md).

@@ -19,3 +19,7 @@ Le projet iOS natif n’a pas été compilé sur Mac ni testé sur iPad. Pas de 
 ## Correctif 1.1.1
 
 Le test de la version 1.1.0 n’initialisait pas Tk et ne détectait donc pas l’erreur init.tcl signalée. L’autodiagnostic du correctif crée et ferme maintenant une vraie fenêtre avant de tester HTTPS.
+
+## Version 1.2.0
+
+12 tests Python et suites JavaScript réussis : reprise automatique sans suppression sur une nouvelle cible, transferts presse-papiers HTTPS authentifiés et limites, boutons de transfert et copie de secours. Aller-retour réel dans le presse-papiers Windows avec accents/emoji/retour à la ligne réussi ; texte précédent restauré. Le fonctionnement physique des autorisations Safari et du clavier Apple reste à essayer sur iPad.

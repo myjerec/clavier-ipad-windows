@@ -23,7 +23,7 @@ Les requêtes du client transmettent Origin et X-Keyboard ; le cookie est HttpOn
 
 ## Saisie directe
 
-Le client transmet un identifiant de zone, l’ancienne base et le nouveau texte. Le serveur applique le changement de fin de texte sous contrôle de cible et d’activité physique. Un changement de cible ou une suppression ambiguë interrompt le suivi. Le client ne rejoue pas automatiquement une frappe au résultat incertain ; Reprendre ici crée une nouvelle zone.
+Le client transmet un identifiant de zone, l’ancienne base et le nouveau texte. Le serveur applique le changement de fin de texte sous contrôle de cible et d’activité physique. Un changement de cible ou une suppression ambiguë interrompt le suivi. Le client ne rejoue pas automatiquement une frappe au résultat incertain. Le client web utilise auto=true : lors d’un changement de cible, seul un nouveau suffixe est envoyé ; une correction ancienne est ignorée. La zone suivante repart de zéro automatiquement. Le protocole strict des anciens clients reste disponible.
 
 ## Données persistantes
 

@@ -15,6 +15,7 @@ import os
 import subprocess
 import hashlib
 import sys
+from windows_clipboard import clipboard
 import tkinter as tk
 from tkinter import ttk, messagebox
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -195,18 +196,19 @@ def direct_events(previous, text):
     # Editors disagree on how many backspaces erase an emoji/combining sequence.
     # Refuse ambiguous deletion rather than risk removing surrounding PC text.
     if any(ord(char)>0xFFFF or unicodedata.combining(char) or char in '\u200d\ufe0f\n\r\t' for char in removed):
-        raise ValueError('Corrige cet emoji ou saut de ligne sur le PC, puis touche « Nouvelle zone ».')
+        raise ValueError('Cette correction est ambiguë : vérifie le texte sur le PC. La prochaine saisie repartira automatiquement.')
     events=[]
     for _ in removed: events.extend([event(8),event(8,flags=2)])
     if text[common:]: events.extend(prepare({'type':'text','text':text[common:]}))
     return events
 
 class State:
-    def __init__(self, sink=inject, context=input_context, launcher=launch_application, pairing_path=None):
+    def __init__(self, sink=inject, context=input_context, launcher=launch_application, pairing_path=None, clipboard_io=clipboard):
         self.lock=threading.RLock()
         self.sink=sink
         self.context=context
         self.launcher=launcher
+        self.clipboard_io=clipboard_io
         self.enabled=True
         self.pairing_path=Path(pairing_path) if pairing_path else None
         self.token=None
@@ -256,6 +258,14 @@ class State:
                 return
             if not self.enabled:
                 raise ValueError('Clavier en pause sur le PC')
+            if isinstance(data,dict) and data.get('type')=='clipboard':
+                action=data.get('action')
+                if action not in ('read','write'): raise ValueError('Action presse-papiers inconnue')
+                value=data.get('text')
+                if action=='write' and (not isinstance(value,str) or len(value)>2000 or '\0' in value):
+                    raise ValueError('Texte de 2 000 caractères maximum requis')
+                result=self.clipboard_io(action,value)
+                return {'text':result} if action=='read' else {'copied':True}
             if isinstance(data,dict) and data.get('type')=='media':
                 action=data.get('action')
                 if not isinstance(action,str) or action not in MEDIA: raise ValueError('Commande multimédia inconnue')
@@ -275,6 +285,14 @@ class State:
                 if not all(isinstance(x,str) for x in (draft_id,base,value)) or not 1<=len(draft_id)<=80 or max(len(base),len(value))>2000:
                     raise ValueError('Saisie directe invalide')
                 current=self.context()
+                # Opt-in for the automatic client; old native clients keep their strict protocol.
+                if data.get('auto') is True and (self.draft is None and base or self.draft is not None and
+                        (self.draft['id']!=draft_id or self.draft['blocked'] or base!=self.draft['text'] or current!=self.draft['context'])):
+                    # Only a known appended suffix is safe at a new cursor. Never replay the old draft.
+                    suffix=value[len(base):] if value.startswith(base) else ''
+                    self.draft=None
+                    if suffix:self.sink(prepare({'type':'text','text':suffix}))
+                    return {'reset':True,'discardedCorrection':not value.startswith(base)}
                 if self.draft is None or self.draft['id']!=draft_id:
                     if base: raise ValueError('Ouvre une nouvelle zone de saisie')
                     self.draft={'id':draft_id,'text':'','context':current,'blocked':False}
@@ -341,8 +359,8 @@ def handler(state, host):
                 from http.cookies import SimpleCookie
                 cookies=SimpleCookie(self.headers.get('Cookie',''))
                 token=cookies['keyboard'].value if 'keyboard' in cookies else ''
-                state.command(token,data)
-                self.reply(200,{'ok':True},cookie=f'keyboard={token}; Secure; HttpOnly; SameSite=Strict; Path=/; Max-Age=31536000')
+                result=state.command(token,data)
+                self.reply(200,{'ok':True,**(result or {})},cookie=f'keyboard={token}; Secure; HttpOnly; SameSite=Strict; Path=/; Max-Age=31536000')
             except PermissionError as exc: self.reply(401,{'error':str(exc)})
             except (ValueError,TypeError,KeyError) as exc: self.reply(400,{'error':str(exc)})
             except Exception: self.reply(500,{'error':'Échec de saisie Windows ou connexion interrompue'})

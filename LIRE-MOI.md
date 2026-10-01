@@ -1,4 +1,4 @@
-# Guide d’utilisation — Clavier iPad 1.1.1
+# Guide d’utilisation — Clavier iPad 1.2.0
 
 ## Installer sur Windows
 
@@ -39,7 +39,7 @@ Le cookie Safari est sécurisé et renouvelé lors de l’utilisation. L’appai
 3. Écris : les lettres sont envoyées directement. Les compositions attendent leur validation par iPadOS.
 4. Les corrections et suggestions de l’iPad remplacent la fin du texte suivi. Elles dépendent de tes réglages clavier iPadOS.
 
-La zone suit au maximum 2 000 caractères de cette session. **Reprendre ici** recommence le suivi au curseur courant, sans effacer le document PC. Utilise ce bouton après un clic sur le PC, un changement de fenêtre, un raccourci, l’ouverture d’une application ou un texte favori.
+La zone suit au maximum 2 000 caractères de cette session. Le suivi recommence automatiquement au curseur courant après un clic, un changement de fenêtre ou un raccourci, sans réécrire l’ancien texte. La zone se renouvelle aussi automatiquement avant sa limite de longueur.
 
 Après une erreur réseau, vérifie le document avant de reprendre : l’application ne renvoie pas automatiquement les frappes dont le résultat est incertain.
 
@@ -68,8 +68,8 @@ La croix de la fenêtre et **Quitter et couper la connexion** arrêtent complèt
 | Page accessible, code refusé | Code actuel à huit chiffres ; cinq minutes non dépassées ; Nouvel appairage si nécessaire |
 | Port déjà utilisé | Fermer l’autre compagnon, y compris sa version masquée ; ne lancer qu’une instance |
 | Connexion bloquée par Windows | Autoriser le compagnon uniquement sur ton réseau privé ; limiter la règle TCP 18443 au réseau local |
-| Les lettres n’arrivent pas | Compagnon non pausé, cible PC sélectionnée, aucune fenêtre administrateur/UAC, puis Reprendre ici |
-| Le texte ne correspond plus | Arrêter la saisie, corriger sur le PC, toucher Reprendre ici |
+| Les lettres n’arrivent pas | Compagnon non pausé, cible PC sélectionnée, aucune fenêtre administrateur/UAC, puis continue à écrire |
+| Le texte ne correspond plus | Arrêter la saisie, corriger sur le PC, reprendre la saisie |
 | L’iPad redemande un code | Données Safari effacées, adresse ou certificat changé, appareil révoqué, autre installation du compagnon |
 | Icône introuvable | Regarder dans ^ près de l’horloge ; si l’application a été quittée, la relancer |
 
@@ -79,6 +79,14 @@ Aucune règle du routeur n’est nécessaire. Ne redirige pas le port sur Intern
 
 Pas de Ctrl+Alt+Suppr, de contrôle de l’écran verrouillé, de fenêtre UAC, d’application administrateur ou de maintien de touches pour les jeux. Le compagnon s’exécute dans ta session utilisateur, ce n’est pas un service système Windows.
 
-La suppression automatique d’emoji, caractères combinés, tabulations ou sauts de ligne peut être arrêtée, car leur effacement varie selon l’application cible. Les éditeurs qui réécrivent eux-mêmes le texte peuvent désynchroniser les corrections. Corrige ces situations sur le PC puis reprends une nouvelle zone.
+La suppression automatique d’emoji, caractères combinés, tabulations ou sauts de ligne peut être arrêtée, car leur effacement varie selon l’application cible. Les éditeurs qui réécrivent eux-mêmes le texte peuvent désynchroniser les corrections. Corrige ces situations sur le PC puis continue à écrire.
 
 La version native iOS est un projet source non compilé : pas d’IPA, pas de TestFlight et pas d’App Store. La version utilisable sur iPad est actuellement celle de Safari. macOS reste une évolution possible, non implémentée.
+
+## Presse-papiers iPad ↔ PC (1.2.0)
+
+Dans l’onglet Presse-papiers, **iPad → PC** lit le texte copié sur l’iPad et le place dans le presse-papiers Windows. **PC → iPad** fait l’inverse. Le transfert remplace le texte du presse-papiers de destination ; il ne colle pas automatiquement dans un document. Limite : texte brut de 2 000 caractères, sans images ni fichiers, sans historique ni stockage de ce texte par l’application.
+
+Safari peut demander une autorisation ou un geste Coller. Si l’accès direct est refusé, colle le texte dans la zone du panneau puis utilise les boutons de copie. Pour recevoir depuis le PC, le texte est également placé dans cette zone. Aucun échange n’a lieu en arrière-plan. [Règles du presse-papiers Safari](https://webkit.org/blog/10855/async-clipboard-api/).
+
+La saisie est toujours automatique après appairage, sans option Direct ni bouton Reprendre. iPadOS peut encore imposer de toucher le champ pour afficher son clavier Apple : une page web ne peut pas forcer son ouverture sans interaction. Après une erreur réseau, les caractères au résultat incertain ne sont pas renvoyés : vérifie le document avant de continuer.

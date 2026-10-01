@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id), selected=new Set();
 let chain=Promise.resolve(), generation=0, pending=0;
 function status(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error);}
 function clearMods(){selected.clear();document.querySelectorAll('#mods [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));}
-function connected(){ $('keyboard').disabled=false;$('connection').hidden=true;$('connection-toggle').setAttribute('aria-expanded','false'); }
+function connected(){ const first=$('keyboard').disabled;$('keyboard').disabled=false;if(first)$('text').focus({preventScroll:true});$('connection').hidden=true;$('connection-toggle').setAttribute('aria-expanded','false'); }
 async function post(path,data){
  const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),5000);
  try{const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-Keyboard':'1'},body:JSON.stringify(data),signal:controller.signal});
@@ -11,10 +11,10 @@ async function post(path,data){
  }finally{clearTimeout(timer);}
 }
 function send(data){
- if(data.type!=='media'&&(sentText||nativeBusy))nativeProblem('Commande utilisée : touche « Reprendre ici » avant de reprendre la saisie directe.');
+ const beforeCommand=$('text').value;
  if(pending>=20){status('Trop de touches en attente. Patiente un instant.',true);return;}
  const current=generation;pending++;
- chain=chain.then(async()=>{if(current!==generation)return;await post('/command',data);status('Connecté · commande envoyée au PC');}).catch(e=>{generation++;clearMods();status(e.name==='AbortError'?'Connexion interrompue : vérifie le PC avant de réessayer.':e.message,true);}).finally(()=>pending--);
+ chain=chain.then(async()=>{if(current!==generation)return;await post('/command',data);if(data.type!=='media')resetDraft(beforeCommand);status('Connecté · commande envoyée au PC');}).catch(e=>{generation++;clearMods();status(e.name==='AbortError'?'Connexion interrompue : vérifie le PC avant de réessayer.':e.message,true);}).finally(()=>pending--);
 }
 function button(parent,label,action,caption){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=action;if(caption){const small=document.createElement('small');small.textContent=caption;b.append(small);}parent.append(b);return b;}
 for(const mod of ['Ctrl','Alt','Shift','Win','AltGr']){
@@ -37,11 +37,17 @@ $('reset').onclick=clearMods;
 let sentText='', nativeBusy=false, nativeBlocked=false, composing=false, draftTimer;
 function newDraftId(){return Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');}
 let draftId=newDraftId();
-function nativeProblem(message){nativeBlocked=true;$('live').checked=false;$('native-status').textContent=message;}
+function resetDraft(snapshot=$('text').value){
+ const current=$('text').value;
+ $('text').value=current.startsWith(snapshot)?current.slice(snapshot.length):'';
+ sentText='';draftId=newDraftId();nativeBlocked=false;
+}
+function nativeProblem(message){resetDraft();$('native-status').textContent=message;}
+
 function scheduleDraft(){
  clearTimeout(draftTimer);
  if(selected.size){$('native-status').textContent='Combinaison active · choisis une lettre (ou utilise « Lettres PC »).';return;}
- if($('live').checked&&!nativeBlocked&&!composing&&!document.hidden)flushDraft(false);
+ if(!nativeBlocked&&!composing&&!document.hidden)flushDraft(false);
 }
 function flushDraft(all){
  clearTimeout(draftTimer);
@@ -49,7 +55,7 @@ function flushDraft(all){
  let draft;
  try{draft=nextDraft($('text').value,sentText,all);}catch(e){nativeProblem(e.message);return;}
  if(!draft.changed)return;
- nativeBusy=true;$('send').disabled=true;$('new-text').disabled=true;
+ nativeBusy=true;
  const current=generation;
  chain=chain.then(async()=>{
   if(current!==generation||document.hidden||nativeBlocked) return;
@@ -57,12 +63,13 @@ function flushDraft(all){
   if(composing)return;
   draft=nextDraft($('text').value,sentText,all);
   if(!draft.changed)return;
-  await post('/command',{type:'direct',draft:draftId,base:sentText,text:draft.text});
-  sentText=draft.snapshot;
-  $('native-status').textContent='Saisie en direct · lettres et corrections transmises au PC.';
+  const result=await post('/command',{type:'direct',draft:draftId,base:sentText,text:draft.text,auto:true});
+  if(current!==generation)return;
+  if(result.reset||draft.snapshot.length>=1800){resetDraft(draft.snapshot);}else{sentText=draft.snapshot;}
+  $('native-status').textContent=result.discardedCorrection?'Le curseur a changé : ancienne correction ignorée. Continue à écrire.':'Saisie automatique · lettres et corrections transmises au PC.';
  }).catch(e=>{
-  generation++;nativeProblem('Envoi arrêté : vérifie le texte sur le PC avant de créer une nouvelle zone. '+(e.name==='AbortError'?'Connexion interrompue.':e.message));
- }).finally(()=>{nativeBusy=false;$('send').disabled=false;$('new-text').disabled=false;scheduleDraft();});
+  generation++;nativeProblem('Vérifie le texte sur le PC ; la prochaine saisie repartira automatiquement. '+(e.name==='AbortError'?'Connexion interrompue.':e.message));
+ }).finally(()=>{nativeBusy=false;scheduleDraft();});
 }
 $('text').addEventListener('compositionstart',()=>{composing=true;clearTimeout(draftTimer);});
 $('text').addEventListener('compositionend',()=>{composing=false;scheduleDraft();});
@@ -75,14 +82,7 @@ $('text').addEventListener('beforeinput',e=>{
   e.preventDefault();key(e.data.toUpperCase());
  }else if(e.cancelable){e.preventDefault();status('Choisis une lettre dans « Lettres PC » pour cette combinaison.',true);}
 });
-$('live').onchange=scheduleDraft;
-$('send').onclick=()=>{clearMods();flushDraft(true);};
-$('new-text').onclick=()=>{
- if(nativeBusy)return;
- clearTimeout(draftTimer);sentText='';draftId=newDraftId();nativeBlocked=false;$('text').value='';$('live').checked=true;
- $('native-status').textContent='Nouvelle zone · le texte du PC reste inchangé.';$('text').focus();
-};
-document.addEventListener('visibilitychange',()=>{if(document.hidden){clearMods();generation++;clearTimeout(draftTimer);$('live').checked=false;}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){clearMods();generation++;clearTimeout(draftTimer);resetDraft();}});
 let checkingConnection=false,wasConnected=false;
 async function reconnect(){
  if(checkingConnection||document.hidden)return;
@@ -106,7 +106,7 @@ document.querySelectorAll('[data-panel]').forEach(tab=>{
  };
 });
 document.querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>{
- if(document.activeElement===$('text'))e.preventDefault();
+ if(document.activeElement===$('text')&&!b.closest?.('#clipboard-panel'))e.preventDefault();
 }));
 function fitViewport(){
  const viewport=window.visualViewport;
@@ -116,3 +116,36 @@ function fitViewport(){
 window.addEventListener('resize',fitViewport);
 if(window.visualViewport){window.visualViewport.addEventListener('resize',fitViewport);window.visualViewport.addEventListener('scroll',fitViewport);}
 fitViewport();
+
+// Clipboard access is explicit; never poll or persist clipboard contents.
+function clipStatus(message){$('clipboard-status').textContent=message;}
+function clipCheck(text){if(typeof text!=='string'||text.length>2000||text.includes('\0'))throw Error('Texte de 2 000 caractères maximum, sans caractère nul.');return text;}
+$('clip-to-pc').onclick=async()=>{
+ try{
+  const text=clipCheck(await navigator.clipboard.readText());
+  await post('/command',{type:'clipboard',action:'write',text});
+  clipStatus('Copié sur le PC. Utilise Coller dans ton application Windows.');
+ }catch(e){clipStatus('Transfert non effectué : '+e.message+' Tu peux coller le texte dans la zone ci-dessous.');}
+};
+$('clip-from-pc').onclick=async()=>{
+ try{
+  // Start the write during the tap: Safari accepts a promised ClipboardItem.
+  $('clipboard-text').value='';
+  const transfer=post('/command',{type:'clipboard',action:'read'}).then(r=>{
+   const text=clipCheck(r.text);$('clipboard-text').value=text;return text;
+  });
+  transfer.catch(()=>{}); // A denied browser write must not leave a rejected fetch unhandled.
+  if(typeof ClipboardItem!=='undefined'&&navigator.clipboard?.write){
+   await navigator.clipboard.write([new ClipboardItem({'text/plain':transfer.then(text=>new Blob([text],{type:'text/plain'}))})]);
+   clipStatus('Texte du PC copié sur l’iPad.');
+  }else{await transfer;clipStatus('Texte reçu. Touche « Copier ce texte sur l’iPad ».');}
+ }catch(e){clipStatus('Copie non terminée : '+e.message+' Si le texte est affiché, utilise le bouton de copie ci-dessous.');}
+};
+$('clip-send-text').onclick=async()=>{
+ try{await post('/command',{type:'clipboard',action:'write',text:clipCheck($('clipboard-text').value)});clipStatus('Texte copié dans le presse-papiers du PC.');}
+ catch(e){clipStatus(e.message);}
+};
+$('clip-copy-text').onclick=async()=>{
+ try{await navigator.clipboard.writeText(clipCheck($('clipboard-text').value));clipStatus('Texte copié dans le presse-papiers de l’iPad.');}
+ catch(e){clipStatus('Utilise un appui long dans la zone de texte, puis Sélectionner et Copier.');}
+};

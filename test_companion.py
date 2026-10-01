@@ -66,6 +66,43 @@ class ProtocolTests(unittest.TestCase):
         state.command(token,{'type':'key','key':'Left'})
         with self.assertRaises(ValueError):direct('Nouvelle','Nouvelle suite','new')
 
+    def test_automatic_rebase_never_erases_old_target(self):
+        captured=[]; current=[(1,2,3)]
+        state=c.State(captured.append,context=lambda:current[0])
+        token=state.pair(state.code)
+        def direct(base,text):
+            return state.command(token,{'type':'direct','draft':'auto-test','base':base,'text':text,'auto':True})
+        direct('','bonjour')
+        current[0]=(4,5,6)
+        result=direct('bonjour','bonjour!')
+        self.assertTrue(result['reset'])
+        self.assertEqual(len(captured[-1]),2)
+        self.assertEqual(captured[-1][0].data.ki.wScan,ord('!'))
+        before=len(captured)
+        result=direct('bonjour','bonsoir')
+        self.assertTrue(result['discardedCorrection'])
+        self.assertEqual(len(captured),before)
+        direct('','suite')
+        state.command(token,{'type':'key','key':'Left'})
+        result=direct('suite','suiteX')
+        self.assertTrue(result['reset'])
+        self.assertEqual(captured[-1][0].data.ki.wScan,ord('X'))
+
+    def test_clipboard_requires_auth_valid_text_and_unpaused_state(self):
+        calls=[]
+        state=c.State(clipboard_io=lambda action,text:(calls.append((action,text)) or 'Bonjour été 😀'))
+        with self.assertRaises(PermissionError):state.command('',{'type':'clipboard','action':'read'})
+        self.assertEqual(calls,[])
+        token=state.pair(state.code)
+        self.assertEqual(state.command(token,{'type':'clipboard','action':'read'})['text'],'Bonjour été 😀')
+        state.command(token,{'type':'clipboard','action':'write','text':'été'})
+        self.assertEqual(calls[-1],('write','été'))
+        for data in [{'action':'shell'},{'action':'write','text':'x'*2001},{'action':'write','text':'x\0y'}]:
+            with self.assertRaises(ValueError):state.command(token,{'type':'clipboard',**data})
+        before=len(calls);state.enabled=False
+        with self.assertRaises(ValueError):state.command(token,{'type':'clipboard','action':'read'})
+        self.assertEqual(len(calls),before)
+
     def test_direct_ambiguous_deletions_fail_closed(self):
         for old,new in [('😀',''),('e\u0301','e'),('ligne\n','ligne')]:
             with self.assertRaises(ValueError):c.direct_events(old,new)
@@ -108,7 +145,11 @@ class ProtocolTests(unittest.TestCase):
         with self.assertRaises(ValueError):state.pair(state.code)
 
     def test_https_end_to_end(self):
-        captured=[];state=c.State(captured.append)
+        captured=[];clip=['']
+        def clipboard_io(action,text):
+            if action=='write':clip[0]=text
+            return clip[0]
+        state=c.State(captured.append,clipboard_io=clipboard_io)
         with tempfile.TemporaryDirectory() as temp:
             cert,key,fp=c.certificate('127.0.0.1',Path(temp))
             server=c.ThreadingHTTPServer(('127.0.0.1',0),c.handler(state,'placeholder'))
@@ -135,6 +176,10 @@ class ProtocolTests(unittest.TestCase):
                 self.assertEqual(request('/command',{'type':'text','text':'Bonjour é😀'},{'Cookie':cookie})[0],200)
                 self.assertEqual(len(captured),1)
                 self.assertEqual(request('/command',{'type':'key','key':'Delete','mods':['Ctrl','Alt']},{'Cookie':cookie})[0],400)
+                self.assertEqual(request('/command',{'type':'clipboard','action':'read'})[0],401)
+                self.assertEqual(request('/command',{'type':'clipboard','action':'write','text':'é 😀'},{'Cookie':cookie})[0],200)
+                status,_,body=request('/command',{'type':'clipboard','action':'read'},{'Cookie':cookie})
+                self.assertEqual(status,200);self.assertEqual(json.loads(body)['text'],'é 😀')
                 state.rotate()
                 self.assertEqual(request('/command',{'type':'text','text':'a'},{'Cookie':cookie})[0],401)
             finally:server.shutdown();server.server_close();thread.join()

@@ -1,5 +1,13 @@
 # Historique
 
+## 1.2.0 — 1 octobre 2026
+
+- Saisie toujours directe, sans boutons Reprendre ici, Direct ou Synchroniser.
+- Reprise automatique après raccourci/changement de cible, sans réécriture de l’ancien texte.
+- Presse-papiers texte iPad ↔ PC, sur action explicite, avec zone de secours Safari.
+- Échanges authentifiés et limités à 2 000 caractères ; aucun historique.
+
+
 ## 1.1.1 — 28 septembre 2026
 
 - Correction du démarrage « Can’t find a usable init.tcl » : Tcl/Tk est installé dans `_internal` à côté du programme, sans extraction temporaire du .exe.
